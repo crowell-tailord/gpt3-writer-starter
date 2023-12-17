@@ -1,0 +1,121 @@
+.root.calc {
+    display: block;
+    height:auto;
+    min-height:100vh;
+}
+.calc .container {
+    gap: 0px;
+    width:auto;
+    align-items: start;
+    padding:40px 30px;
+}
+.calc .container-left {
+    /* width:450px; */
+}
+.calc .header {
+    align-items: start;
+    margin-bottom:10px;
+}
+.calc .header h2 {
+    margin:0;
+}
+.calc .header p {
+    color: rgba(255, 255, 255, 0.75);
+}
+.calc .prompt-container {
+    align-items: start;
+}
+.calc .prompt-inputs {
+    width:100%;
+    display: flex;
+    column-gap:10px;
+}
+.calc label {
+    color:white;
+    line-height:28px;
+}
+.calc .prompt-box {
+    height:auto;
+    box-sizing:border-box;
+}
+.calc .prompt-box.qty {
+    width:60px;
+    height:20px;
+    align-self:center;
+    -moz-appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+.calc .price {
+    padding:1px 10px;
+    width:120px;
+    border-radius:8px;
+    text-align: right;
+}
+.price-field {
+    position:relative;
+}
+.price-field::before {
+    content:"$";
+    position:absolute;
+    left:4px;
+    top:3px;
+    color:white;
+}
+.calc .output-content {
+    border-bottom-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-top-width: 1px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: auto;
+    font-size: 16px;
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 1.6em;
+    text-align: start;
+    color: rgba(255, 255, 255, 0.75);
+}
+.calc .output-content > div {
+    display:grid;
+    gap: 25px;
+    width:100%;
+    padding-bottom:12px;
+    grid-template-columns: 1fr 45px 30px 45px 1px;
+}
+.calc .table-header {
+    text-transform: uppercase;
+    font-weight: bold;
+    color:white;
+    /* min-width:600px; */
+}
+.calc .output-content > div span {
+    text-align: center;
+}
+.calc .output-content > div span:first-child {
+    text-align: left;
+}
+.calc .output-content > div span:nth-child(4) {
+    text-align: right;
+}
+.calc .delete {
+    width:8px;
+    cursor: pointer;
+    color:rgb(88, 25, 25);
+}
+
+@media print {
+    .calc .container-left,
+    .delete {display:none;}
+    * {
+        color: black !important;
+    }
+    .output-content {padding-left:0 !important}
+}
