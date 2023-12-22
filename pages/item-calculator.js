@@ -1,19 +1,42 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 
 const Home = () => {
 	const [userInput, setUserInput] = useState('')
 	const [qty, setQty] = useState(1);
 	const [price, setPrice] = useState(0)
 	const [isGenerating, setIsGenerating] = useState(false);
-	const [list, setList] = useState([])
+	const [list, setList] = useState([{
+		id: new Date().getTime(),
+		item: 'u r so cute',
+		value: 100000,
+		qty: 1,
+		ttl: 100000
+	}])
 	const [grand, setGrand] = useState(0);
+
+	useEffect(() => {
+		(async () => {
+			setIsGenerating(true)
+			const response = await fetch('/api/getData', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const data = await response.json()
+			if(!data.error) {
+				setList(data)
+			}
+			setIsGenerating(false)
+        })()
+    }, [])
 	
 	useEffect(() => {
 		let ttl = 0;
 		list.map(l => ttl += Number(l.ttl))
 		setGrand(ttl)
+		saveData()
 	}, [list])
 	
 	const callGenerateEndpoint = async () => {
@@ -34,25 +57,51 @@ const Home = () => {
 			
 			const data = await response.json();
 			const { output } = data;
-			value = output.text;
+			value = output;
 			console.log('api replied...', value);
+			const firstChar = value.trim().charAt(0)
+			if(!/^[0-9]/.test(value) && firstChar != '$') {
+				alert(`${value} \nYou can try it again or change the input for better result.`)
+				setIsGenerating(false)
+				return;
+			}
 		}
 		
 		const v = Number(value.replace('$','')).toFixed()
 		const total = Number(qty * v)
+		const update = {
+			id: new Date().getTime(),
+			item: userInput,
+			value: v,
+			qty: qty,
+			ttl: total
+		}
+
+		// await saveData(update)
 		
 		setList(prevState => ([
 			...prevState,
-			{
-				item:userInput,
-				value: v,
-				qty: qty,
-				ttl: total
-			}
+			update
 		]))
 		setQty(1)
 		setPrice(0)
 		setUserInput('')
+		setIsGenerating(false)
+	}
+
+	const saveData = async () => {
+		setIsGenerating(true)
+		try {
+			const send = await fetch('/api/saveData', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify([...list])
+			});
+		} catch (e) {
+			console.error(e)
+		}
 		setIsGenerating(false)
 	}
 	
@@ -61,16 +110,15 @@ const Home = () => {
 	}
 
 	const removeItem = (i) => {
-		setList(list.filter(l => l.item != i))
-		// n.filter(l => l.item != i)
-		// console.log(n)
-		// setList(n)
+		setList(list.filter(l => l.id != i))
 	}
 	
 	return (
 		<div className="root calc">
 			<Head>
-				<title>Loss Calculator</title>
+				<title>Item Calculator</title>
+				<meta name="robots" content="noindex,nofollow" />
+				<meta name="googlebot" content="noindex,nofollow" />
 			</Head>
 			<div className="container container-left">
 				<div className="header">
@@ -101,14 +149,16 @@ const Home = () => {
 			<div className="container container-right output">
 				<div className="header">
 					<div className="header-title">
-						<h2>List • ${grand} </h2>
+						<h2>List • ${grand} {isGenerating && <span className='loader'></span>}</h2>
+						<div className="print" onClick={() => window.print()}>print</div>
 					</div>
 				</div>
 				<div className="output-content">
 					<div className="table-header"><span>Item</span><span>Value</span><span>Qty</span><span>Total</span><i className="delete" /></div>
-					{list && list.map(l => <div><span>{l.item}</span><span>${l.value}</span><span>{l.qty}</span><span>${l.ttl}</span><i className="delete" onClick={() => removeItem(l.item)}>x</i></div>)}
+					{list && list.map((l, i) => <div key={`${i}${l.item}`}><span>{l.item}</span><span>${l.value}</span><span>{l.qty}</span><span>${l.ttl}</span><i className="delete" onClick={() => removeItem(l.id)}>x</i></div>)}
 				</div>
 			</div>
+			<footer>Data is retrieved via OpenAI ChatGPT (gpt-4). 2024.</footer>
 		</div>
 	);
 };

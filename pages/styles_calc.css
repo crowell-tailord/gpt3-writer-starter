@@ -3,6 +3,16 @@
     height:auto;
     min-height:100vh;
 }
+.root.calc::before {
+    content:'';
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    background:url(../assets/wp-mushrooms.jpeg);
+    opacity:0.2;
+}
 .calc .container {
     gap: 0px;
     width:auto;
@@ -37,6 +47,7 @@
 .calc .prompt-box {
     height:auto;
     box-sizing:border-box;
+    background:black;
 }
 .calc .prompt-box.qty {
     width:60px;
@@ -64,6 +75,10 @@ input::-webkit-inner-spin-button {
     top:3px;
     color:white;
 }
+.print {
+    place-self: center;
+    cursor:pointer;
+}
 .calc .output-content {
     border-bottom-width: 1px;
     border-color: rgba(255, 255, 255, 0.1);
@@ -71,7 +86,8 @@ input::-webkit-inner-spin-button {
     border-right-width: 1px;
     border-style: solid;
     border-top-width: 1px;
-    background-color: rgba(255, 255, 255, 0.05);
+    /* background-color: rgba(255, 255, 255, 0.05); */
+    background:black;
     border-radius: 16px;
     padding: 20px;
     position: relative;
@@ -110,10 +126,17 @@ input::-webkit-inner-spin-button {
     cursor: pointer;
     color:rgb(88, 25, 25);
 }
+.calc footer {
+    text-align: center;
+    color:white;
+    font-size: 14px;;
+    margin:50px 0;
+}
 
 @media print {
     .calc .container-left,
-    .delete {display:none;}
+    .delete,
+    .print {display:none;}
     * {
         color: black !important;
     }
