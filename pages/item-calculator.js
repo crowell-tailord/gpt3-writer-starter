@@ -6,14 +6,9 @@ const Home = () => {
 	const [qty, setQty] = useState(1);
 	const [price, setPrice] = useState(0)
 	const [isGenerating, setIsGenerating] = useState(false);
-	const [list, setList] = useState([{
-		id: new Date().getTime(),
-		item: 'u r so cute',
-		value: 100000,
-		qty: 1,
-		ttl: 100000
-	}])
+	const [list, setList] = useState([])
 	const [grand, setGrand] = useState(0);
+	const [fetched, setFetched] = useState(false)
 
 	useEffect(() => {
 		(async () => {
@@ -26,7 +21,10 @@ const Home = () => {
 			});
 			const data = await response.json()
 			if(!data.error) {
-				setList(data)
+				if(data.hasItems) setList(data.items)
+				setFetched(true)
+			} else {
+				console.error(data.error)
 			}
 			setIsGenerating(false)
         })()
@@ -36,7 +34,7 @@ const Home = () => {
 		let ttl = 0;
 		list.map(l => ttl += Number(l.ttl))
 		setGrand(ttl)
-		saveData()
+		if(fetched) saveData()
 	}, [list])
 	
 	const callGenerateEndpoint = async () => {
@@ -110,7 +108,7 @@ const Home = () => {
 	}
 
 	const removeItem = (i) => {
-		setList(list.filter(l => l.id != i))
+		setList(list.filter(l => l.id != i))		
 	}
 	
 	return (
@@ -119,6 +117,8 @@ const Home = () => {
 				<title>Item Calculator</title>
 				<meta name="robots" content="noindex,nofollow" />
 				<meta name="googlebot" content="noindex,nofollow" />
+				<meta property="og:title" content="Item Calculator" key="title"/>
+				<meta property="og:description" content="calculate your item prices!" key="description"/>
 			</Head>
 			<div className="container container-left">
 				<div className="header">

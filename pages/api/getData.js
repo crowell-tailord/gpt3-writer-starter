@@ -4,16 +4,13 @@ const rtdb = ref(db);
 
 
 export default async function handler(req, res) {
-    // let {alias, email, discord, twitter, services, portfolio, years} = req.body;
-    // console.log(req.body)
-
-    const reference = child(rtdb, `lossCalc`);
+    const reference = child(rtdb,'/');
     const snapshot = await get(reference);
     if (!snapshot.exists()) {
         console.error('No database found!')
         res.status(500).json({ error: 'error fetching db table' })
     } else {
         const d = snapshot.val();
-        res.status(200).json(d)
+        res.status(200).json(d.lossCalc)
     }
 }

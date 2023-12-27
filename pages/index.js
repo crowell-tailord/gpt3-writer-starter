@@ -22,9 +22,9 @@ const Home = () => {
 
     const data = await response.json();
     const { output } = data;
-    console.log('api replied...', output.text);
+    console.log('api replied...', output);
 
-    setApiOutput(`${output.text}`)
+    setApiOutput(output)
     setIsGenerating(false)
   }
 
